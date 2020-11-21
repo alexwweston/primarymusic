@@ -2,9 +2,11 @@
     "name": "music",
     "version": "1.0.0",
     "description": "music library manager",
-    "main": "index.js",
+    "main": "src/index.js",
+    "bin": "./src/index.js",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "start": "node src/index.js"
     },
     "author": "Alex Weston",
     "license": "ISC",
