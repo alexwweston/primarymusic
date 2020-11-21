@@ -1,0 +1,14 @@
+{
+    "name": "music",
+    "version": "1.0.0",
+    "description": "music library manager",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "author": "Alex Weston",
+    "license": "ISC",
+    "devDependencies": {
+        "jest": "^26.6.3"
+    }
+}
