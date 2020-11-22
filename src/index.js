@@ -2,4 +2,4 @@
 
 const { MusicRepl } = require('./repl/musicRepl');
 
-new musicRepl({ prompt: '> ' });
+new MusicRepl();

@@ -1,15 +1,23 @@
 class MusicStore {
-    add () {}
+    add (title, artist) {}
 
-    play () {}
+    play (title) {}
 
-    showAll () {}
+    showAll () {
+        return [];
+    }
 
-    showAllByArtist () {}
+    showAllByArtist (artist) {
+        return [];
+    }
 
-    showUnplayed () {}
+    showUnplayed () {
+        return [];
+    }
 
-    showUnplayedByArtist () {}
+    showUnplayedByArtist (artist) {
+        return [];
+    }
 }
 
 module.exports = {

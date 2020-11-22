@@ -11,27 +11,90 @@ repl.start = jest.fn(() => {
 
 describe('MusicRepl', () => {
     let testRepl;
+    let replOutputCbSpy;
 
-    beforeAll(() => {
-        testRepl = new MusicRepl({
-            prompt: '>',
-        });
+    beforeEach(() => {
+        testRepl = new MusicRepl();
+        replOutputCbSpy = jest.fn();
     });
 
     it('add command prints correct message and calls store add', async () => {
-        replOutputCbSpy = jest.fn();
-        addSpy = jest.spyOn(testRepl.getStore(), 'add');
-        testRepl.evaluator('add', '', '', replOutputCbSpy);
+        const addSpy = jest.spyOn(testRepl.getStore(), 'add');
+        testRepl.evaluator(
+            'add "Likewise" "Frances Quinlan"',
+            '',
+            '',
+            replOutputCbSpy
+        );
         expect(replOutputCbSpy).toHaveBeenCalled();
         const [_, resp] = replOutputCbSpy.mock.calls[0];
-        expect(resp).toMatch(/Added/i);
+        expect(resp).toBe('Added "Likewise" by Frances Quinlan');
         expect(addSpy).toHaveBeenCalled();
     });
 
+    it('play command prints correct message and calls store play', async () => {
+        const playSpy = jest.spyOn(testRepl.getStore(), 'play');
+        testRepl.evaluator(
+            'play "Sometimes I sit and Think, and Sometimes I Just Sit"',
+            '',
+            '',
+            replOutputCbSpy
+        );
+        expect(replOutputCbSpy).toHaveBeenCalled();
+        const [_, resp] = replOutputCbSpy.mock.calls[0];
+        expect(resp).toBe(
+            'You\'re listening to "Sometimes I sit and Think, and Sometimes I Just Sit"'
+        );
+        expect(playSpy).toHaveBeenCalled();
+    });
+
+    // TODO
+    it('play command errors if title not found', async () => {});
+
+    it('show all calls correct store method', async () => {
+        const showAllSpy = jest.spyOn(testRepl.getStore(), 'showAll');
+        testRepl.evaluator('show all', '', '', replOutputCbSpy);
+        expect(replOutputCbSpy).toHaveBeenCalled();
+        expect(showAllSpy).toHaveBeenCalled();
+    });
+
+    it('show all by artist calls correct store method and passes artist', async () => {
+        const showAllByArtistSpy = jest.spyOn(
+            testRepl.getStore(),
+            'showAllByArtist'
+        );
+        testRepl.evaluator('show all by "Mitski"', '', '', replOutputCbSpy);
+        expect(replOutputCbSpy).toHaveBeenCalled();
+        expect(showAllByArtistSpy).toHaveBeenCalled();
+        const [artist] = showAllByArtistSpy.mock.calls[0];
+        expect(artist).toBe('Mitski');
+    });
+
+    it('show unplayed calls correct store method', async () => {
+        const showUnplayedSpy = jest.spyOn(testRepl.getStore(), 'showUnplayed');
+        testRepl.evaluator('show unplayed', '', '', replOutputCbSpy);
+        expect(replOutputCbSpy).toHaveBeenCalled();
+        expect(showUnplayedSpy).toHaveBeenCalled();
+    });
+
+    it('show unplayed by artist calls correct store method and passes artist', async () => {
+        const showUnplayedByArtistSpy = jest.spyOn(
+            testRepl.getStore(),
+            'showUnplayedByArtist'
+        );
+        testRepl.evaluator(
+            'show unplayed by "Dirty Projectors"',
+            '',
+            '',
+            replOutputCbSpy
+        );
+        expect(replOutputCbSpy).toHaveBeenCalled();
+        expect(showUnplayedByArtistSpy).toHaveBeenCalled();
+    });
+
     it('prints error on unrecognized input', async () => {
-        callbackSpy = jest.fn();
-        testRepl.evaluator('what is love?', '', '', callbackSpy);
-        expect(callbackSpy).toHaveBeenCalledWith(
+        testRepl.evaluator('what is love?', '', '', replOutputCbSpy);
+        expect(replOutputCbSpy).toHaveBeenCalledWith(
             null,
             'Uh-oh! Unable to parse input. You wrote: what is love?'
         );
