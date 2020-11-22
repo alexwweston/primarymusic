@@ -2,7 +2,7 @@ const { MusicRepl } = require('./musicRepl');
 const repl = require('repl');
 const { NotFoundError, DuplicateError } = require('../utils/errors');
 
-// create mock to prevent repl server
+// create mock to prevent repl server loop creation
 jest.createMockFromModule('repl').default;
 repl.start = jest.fn(() => {
     return {
