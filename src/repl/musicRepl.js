@@ -1,5 +1,7 @@
+const { type } = require('os');
 const repl = require('repl');
 const { MusicStore } = require('../store/musicStore');
+const { NotFoundError, DuplicateError } = require('../utils/errors');
 
 const cmd_regex = {
     add: /^add "(.*)" "(.*)"$/,
@@ -39,38 +41,55 @@ class MusicRepl {
 
         if (cmd === 'quit') {
             this.exit();
-        } else if (cmd_regex.add.test(cmd)) {
+        }
+        try {
+            response = this.runStoreCommand(cmd);
+        } catch (e) {
+            if (e instanceof NotFoundError) {
+                response = `Unable to find ${e.type}`;
+            } else if (e instanceof DuplicateError) {
+                response = `Title "${e.title}" already exists!`;
+            } else {
+                response =
+                    'Something went wrong! Check your command and try again';
+            }
+        }
+
+        callback(null, response);
+    }
+
+    runStoreCommand (cmd) {
+        if (cmd_regex.add.test(cmd)) {
             // add command
             const match = cmd.match(cmd_regex.add);
             this.store.add(match[1], match[2]);
-            response = `Added \"${match[1]}\" by ${match[2]}`;
+            return `Added \"${match[1]}\" by ${match[2]}`;
         } else if (cmd_regex.play.test(cmd)) {
             // play command
             const match = cmd.match(cmd_regex.play);
             this.store.play(match[1]);
-            response = `You\'re listening to \"${match[1]}\"`;
+            return `You\'re listening to \"${match[1]}\"`;
         } else if (cmd_regex.showAll.test(cmd)) {
             // show all command
             const resList = this.store.showAll();
-            response = resList.join('\n');
+            return resList.join('\n');
         } else if (cmd_regex.showAllBy.test(cmd)) {
             // show all by artist command
             const match = cmd.match(cmd_regex.showAllBy);
             const resList = this.store.showAllByArtist(match[1]);
-            response = resList.join('\n');
+            return resList.join('\n');
         } else if (cmd_regex.showUnplayed.test(cmd)) {
             // show unplayed command
             const resList = this.store.showUnplayed();
-            response = resList.join('\n');
+            return resList.join('\n');
         } else if (cmd_regex.showUnplayedBy.test(cmd)) {
             // show unplayed by artist command
             const match = cmd.match(cmd_regex.showUnplayedBy);
             const resList = this.store.showUnplayedByArtist(match[1]);
-            response = resList.join('\n');
+            return resList.join('\n');
         } else {
-            response = `Uh-oh! Unable to parse input. You wrote: ${cmd}`;
+            return `Uh-oh! Unable to parse input. You wrote: ${cmd}`;
         }
-        callback(null, response);
     }
 }
 

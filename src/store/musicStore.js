@@ -1,7 +1,19 @@
 class MusicStore {
-    add (title, artist) {}
+    format (item) {
+        return '';
+    }
 
-    play (title) {}
+    formatDetailed (item) {
+        return '';
+    }
+
+    add (title, artist) {
+        return '';
+    }
+
+    play (title) {
+        return '';
+    }
 
     showAll () {
         return [];
