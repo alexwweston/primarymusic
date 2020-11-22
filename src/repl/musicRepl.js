@@ -1,7 +1,10 @@
-const { type } = require('os');
 const repl = require('repl');
 const { MusicStore } = require('../store/musicStore');
-const { NotFoundError, DuplicateError } = require('../utils/errors');
+const {
+    NotFoundError,
+    DuplicateError,
+    NoResultsError,
+} = require('../utils/errors');
 
 const cmd_regex = {
     add: /^add "(.*)" "(.*)"$/,
@@ -17,8 +20,9 @@ class MusicRepl {
         console.log('Welcome to your music collection!');
 
         const opts = {
-            prompt: '>',
+            prompt: '> ',
             eval: this.evaluator.bind(this),
+            writer: txt => txt,
         };
         this.replServer = repl.start(opts);
         // handle cmd+D/cmd+C exits
@@ -49,6 +53,8 @@ class MusicRepl {
                 response = `Unable to find ${e.type}`;
             } else if (e instanceof DuplicateError) {
                 response = `Title "${e.title}" already exists!`;
+            } else if (e instanceof NoResultsError) {
+                response = 'No results found';
             } else {
                 response =
                     'Something went wrong! Check your command and try again';

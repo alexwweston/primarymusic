@@ -51,7 +51,9 @@ describe('MusicRepl', () => {
     });
 
     it('play command prints correct message and calls store play', () => {
-        const playSpy = jest.spyOn(testRepl.getStore(), 'play');
+        const playSpy = jest
+            .spyOn(testRepl.getStore(), 'play')
+            .mockImplementation(() => {});
         testRepl.evaluator(
             'play "Sometimes I sit and Think, and Sometimes I Just Sit"',
             '',

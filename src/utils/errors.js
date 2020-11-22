@@ -14,7 +14,16 @@ class DuplicateError extends Error {
     }
 }
 
+class NoResultsError extends Error {
+    constructor (title = '', ...params) {
+        super(...params);
+        this.name = 'NoResultsError';
+        this.title = title;
+    }
+}
+
 module.exports = {
     NotFoundError,
     DuplicateError,
+    NoResultsError,
 };
